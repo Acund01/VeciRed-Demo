@@ -11,7 +11,7 @@
     "android:open": "cap open android",
     "android:run": "npm run android:sync && cap run android",
     "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug",
-    "test": "node --experimental-strip-types --test tests/pond.test.ts tests/phone.test.mjs tests/recommendations.test.ts"
+    "test": "node --experimental-strip-types --test tests/pond.test.ts tests/phone.test.mjs tests/recommendations.test.ts tests/locations.test.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.0",
@@ -22,7 +22,8 @@
     "@supabase/supabase-js": "^2.57.0",
     "lucide-react": "^0.468.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "maplibre-gl": "^6.17.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.0",

@@ -1,5 +1,7 @@
-import { Geolocation } from '@capacitor/geolocation';
-/** Solo proximidad aproximada; nunca publicar coordenadas exactas de vecinos. */
-export async function requestApproximateLocation():Promise<{latitude:number;longitude:number}|null>{
- try {const pos=await Geolocation.getCurrentPosition({enableHighAccuracy:false,timeout:10000});return {latitude:Math.round(pos.coords.latitude*100)/100,longitude:Math.round(pos.coords.longitude*100)/100};}catch{return null;}
+import {Geolocation} from '@capacitor/geolocation';
+import {roundApproximateCoordinates} from '../domain/locations';
+export {roundApproximateCoordinates} from '../domain/locations';
+export async function requestApproximateLocation(){
+ try{const position=await Geolocation.getCurrentPosition({enableHighAccuracy:false,timeout:10000});return roundApproximateCoordinates(position.coords.latitude,position.coords.longitude)}
+ catch{return null}
 }
