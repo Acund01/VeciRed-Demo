@@ -57,11 +57,10 @@ El teléfono se almacena en `private_contacts` y se consulta mediante una funci�
 
 ## Ejecutar en Android
 
-La v14 no incluye el proyecto nativo generado. La primera vez:
+La v14 incluye el proyecto nativo en `android/`. Después de instalar las dependencias y configurar `.env`:
 
 ```bash
-npm run build
-npx cap add android
+npm run android:sync
 npm run android:open
 ```
 
@@ -118,4 +117,4 @@ npm run typecheck
 npm run build
 ```
 
-La v14 pasó la comprobación de TypeScript y la compilación Vite después de corregir los tipos de contactos de emergencia. Quedan pendientes la compilación del APK v14 y las pruebas de integración con un proyecto Supabase configurado y dos dispositivos.
+La v14 pasó la comprobación de TypeScript, la compilación Vite y la generación del APK con JDK 21. Se verificó su apertura en el emulador. En las pruebas manuales del equipo se confirmó el ingreso de una cuenta y la persistencia de una publicación en Supabase. Sigue pendiente la prueba completa entre dos dispositivos.
