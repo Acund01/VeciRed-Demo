@@ -10,7 +10,7 @@ export const neighborhoodGateway:NeighborhoodGateway={
  async closePost(id){const {error}=await client().from('posts').update({active:false}).eq('id',id).select('id').single();if(error)throw error},
  async deletePost(id){const {error}=await client().from('posts').delete().eq('id',id).select('id').single();if(error)throw error}
 };
-export const profileGateway:ProfileGateway={async updatePreferences(id,preferences){const {data,error}=await client().from('profiles').update({animal:preferences.animal,habitat:preferences.habitat,hobby:preferences.hobby}).eq('id',id).select('id,display_name,animal,habitat,hobby').single();if(error)throw error;return {id:data.id,name:data.display_name,animal:data.animal,habitat:data.habitat,hobby:data.hobby,sector:'Zona Norte',phone:preferences.phone} as UserProfile}};
+export const profileGateway:ProfileGateway={async getPhone(){const {data,error}=await client().rpc('get_my_whatsapp').abortSignal(AbortSignal.timeout(12000));if(error)throw error;return typeof data==='string'?data:null},async updatePhone(phone){const {error}=await client().rpc('update_my_whatsapp',{new_phone:phone}).abortSignal(AbortSignal.timeout(12000));if(error)throw error},async updatePreferences(id,preferences){const {data,error}=await client().from('profiles').update({animal:preferences.animal,habitat:preferences.habitat,hobby:preferences.hobby}).eq('id',id).select('id,display_name,animal,habitat,hobby').single();if(error)throw error;return {id:data.id,name:data.display_name,animal:data.animal,habitat:data.habitat,hobby:data.hobby,sector:'Zona Norte',phone:preferences.phone} as UserProfile}};
 
 /** Solo consulta el teléfono tras una acción explícita de contacto. */
 export const contactGateway={

@@ -1,83 +1,70 @@
-# RunaRed · VeciRed v15
+# RunaRed v18 · Preliminar
 
-Demo Android con React, TypeScript, Vite, Capacitor y Supabase. Integra las funciones de la v14 con las mejoras de la rama v16.
+Demo Android con React, TypeScript, Vite, Capacitor y Supabase.
 
-## Versiones
+Esta preliminar integra el commit `3000085` de la rama `frontend/runared-v17-mapa-ubicaciones` sobre la v15 que fue fusionada en main (`9895ec4`). El trabajo está en `frontend/vecired-v18`.
 
-- Esta integración: rama `frontend/vecired-v15`.
-- Base v14 terminada: commit `00c93b7` en `main`.
-- Origen visual y recomendaciones: `origin/frontend/runared-v16`, commit `c2d8240`.
-- Respaldo v10: `frontend/vecired-v10`.
+La carpeta de la app conserva el nombre **`VeciRed_v14_Movil_Android/`** durante las pruebas. El paquete web es **18.0.0** y el identificador Android sigue siendo `com.vecired.app`.
 
-El código de la v15 sigue en **`VeciRed_v14_Movil_Android/`** para conservar la configuración local de Android Studio. La versión del paquete web es 15.0.0; el identificador Android continúa siendo `com.vecired.app`.
+## Novedades
 
-[Comparación e integración](../docs/COMPARACION_V14_V16_Y_V15.md) · [Migración Supabase](MIGRACION_V15.md)
+- Comunidad con vistas **Estanque, Actividad y Mapa**, y filtros compartidos.
+- Muro de recomendaciones con etiquetas personalizadas, calificación de vecinos y mapa de lugares.
+- Edición privada del número de WhatsApp en el perfil. Cambiarlo retira el consentimiento de llamadas anterior.
+- Alertas de emergencia con ubicación aproximada opcional, cierre por el autor y aviso visual/sonido de diez segundos.
+- Realtime de cambios de la tabla y consulta periódica de respaldo; el cliente vuelve a consultar la base antes de mostrar avisos.
+- Registro compatible con la confirmación de correo activada o desactivada: entra a la app si Supabase devuelve una sesión; solicita confirmar cuando corresponde.
+- Se conservan mascotas antiguas, resolver/eliminar publicaciones, consentimiento independiente de llamadas, reconexión y mapa estable.
 
-## Qué incluye
+## Abrir y ejecutar
 
-- Una mascota por vecino; servicios, favores y ayuda comunitaria.
-- Resolver publicaciones propias, conservar historial y eliminar con confirmación.
-- Actualización cada 15 segundos, indicador de carga y aviso de desconexión que conserva los datos visibles.
-- WhatsApp y apertura del marcador telefónico con consentimiento independiente para llamadas.
-- Identidad RunaRed, seis mascotas animadas, seis fondos, navegación inferior y modo noche.
-- Compatibilidad con vizcacha, alpaca y jardín de los perfiles antiguos.
-- Recomendaciones de vecinos y lugares, reconocimiento sin valoraciones ficticias y enlaces validados de Google Maps.
-- Confirmación antes de activar la vista de ayuda de emergencia.
-
-## Abrir el proyecto
+Requiere Node.js 22.18+ o compatible, Android Studio, Android SDK y JDK 21.
 
 ```bash
-git clone --branch frontend/vecired-v15 https://github.com/Acund01/VeciRed-Demo.git
+git clone --branch frontend/vecired-v18 https://github.com/Acund01/VeciRed-Demo.git
 cd VeciRed-Demo/VeciRed_v14_Movil_Android
 npm ci
 npm run dev
 ```
 
-Requiere Node.js 22.18+ o compatible, Android Studio y JDK 21 para Android. En PowerShell se puede usar `npm.cmd`.
-
-Crea `.env` desde `.env.example` con la URL base del proyecto Supabase y su clave pública. No añadas `/rest/v1/` a la URL. Nunca uses `service_role` en el frontend. Sin variables Supabase se utiliza una demo local.
-
-## Mapas y ubicaciones integrados
-
-La v15 incorpora mapa vecinal, puntos opcionales en publicaciones y ubicaciones voluntarias durante 30 minutos de la rama v17. Consulta [el informe de integración](../docs/ACTUALIZACION_MAPAS_V15.md).
-
-## Supabase existente
-
-El instalador completo está en **`supabase/ACTUALIZAR_BASE_EXISTENTE_V15.sql`**. Se probó en PostgreSQL local y el responsable del proyecto confirmó su ejecución manual en Supabase con **“Success. No rows returned”**. Falta completar las pruebas funcionales remotas entre dos cuentas. Revisa [MIGRACION_V15.md](MIGRACION_V15.md). No repitas el esquema completo sobre las tablas actuales.
-
-1. `20261108_posts_delete.sql`: eliminación solo por el autor.
-2. `20261108_call_consent.sql`: consentimiento y consultas de llamadas.
-3. `20261108_v15_recommendations.sql`: nuevos animales/hábitats, recomendaciones y RLS.
-4. `20261108_v15_locations.sql`: coordenadas opcionales y ubicaciones temporales.
-
-El instalador reúne los cuatro scripts; usa una sola opción de instalación.
-
-Están en `src/infrastructure/migrations/`. Para un proyecto completamente nuevo se utiliza únicamente `src/infrastructure/supabase-schema.sql`, que ya incluye todo.
-
-La demo comparte una comunidad entre usuarios autenticados. Antes de un lanzamiento público faltan membresía verificada y permisos por comunidad, moderación y controles de abuso.
-
-## Verificación y Android
+Configura `.env` desde `.env.example` con la URL base y la clave pública de Supabase. Sin esas variables, se utiliza la demostración local.
 
 ```bash
 npm test
-npm run build
 npm run android:sync
 npm run android:open
 ```
 
-Selecciona JDK 21 y un emulador en Android Studio y pulsa Run. La carpeta `android/` ya está incluida.
+En Android Studio selecciona JDK 21 y el emulador, y pulsa Run. En PowerShell puedes usar `npm.cmd`.
 
-APK de depuración:
-`VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk`.
+APK debug: `VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk`.
 
-Para compilar en PowerShell desde la carpeta de la app:
+En la ruta actual con el carácter `°`, la compilación se verificó con:
 
 ```powershell
-.\android\gradlew.bat -p android assembleDebug
+.\android\gradlew.bat -p android assembleDebug -Pandroid.overridePathCheck=true
 ```
 
-En la ruta actual, que contiene `°`, se ha usado `-Pandroid.overridePathCheck=true`. Para compartir el proyecto se recomienda una ruta sencilla sin ese carácter.
+## Actualizar Supabase de v15 a v18
 
-La compilación web y las doce pruebas automatizadas pasaron. Las pruebas completas de recomendaciones y autorización de llamadas entre dos cuentas siguen pendientes; el emulador puede abrir el marcador, pero no realiza llamadas reales.
+**Pendiente en la base remota.** El responsable confirmó anteriormente que ejecutó el actualizador v15.
 
-No se publica `.env`, `node_modules/`, `dist/` ni el APK en Git. El equipo configura su `.env` o recibe el APK por separado.
+La nueva actualización está en **`supabase/ACTUALIZAR_V15_A_V18.sql`**, dentro de la carpeta de la app. Consulta [MIGRACION_V18.md](MIGRACION_V18.md).
+
+El script añade teléfono editable, metadatos de recomendaciones y alertas activas. Se probó dos veces sobre una base local desechable para comprobar repetición y conservación de datos. Las funciones nuevas pueden indicar que no están disponibles hasta aplicar este script.
+
+Para una base completamente nueva se utiliza `src/infrastructure/supabase-schema.sql`, que incorpora las versiones previas.
+
+## Verificación
+
+- 15 pruebas automatizadas correctas.
+- TypeScript, Vite, Capacitor y APK debug con JDK 21 correctos.
+- APK instalado y abierto en el emulador; título v18, sesión, vecinos y vistas nuevas visibles.
+- PostgreSQL 16.8 local: migración v15 → v18 aplicada dos veces; conservación de datos, teléfono privado, consentimiento, etiquetas, coordenadas, alertas, RLS y publicación Realtime comprobados.
+- Faltan la ejecución de SQL v18 y las pruebas completas entre dos cuentas en Supabase.
+
+[Informe de integración](../docs/PRELIMINAR_V18.md) · [Historial de integración v15](../docs/COMPARACION_V14_V16_Y_V15.md).
+
+Esta es una demo de una comunidad compartida entre usuarios autenticados; antes de producción se requiere membresía verificada, aislamiento por comunidad y moderación. Las alertas requieren la app abierta; no incluyen notificaciones push con la app cerrada. El navegador puede impedir audio hasta que el usuario interactúe.
+
+El número de versión y los iconos del launcher nativo conservan sus valores anteriores. La identificación v18 aparece en la interfaz y el paquete web. No se publican `.env`, dependencias instaladas, archivos compilados ni APK en Git.

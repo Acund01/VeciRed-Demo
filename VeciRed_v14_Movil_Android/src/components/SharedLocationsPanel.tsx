@@ -6,11 +6,13 @@ import {Clock3,LocateFixed,MapPin,RefreshCw,Share2,ShieldCheck,StopCircle} from 
 import {hasSupabase} from '../infrastructure/supabase';
 import type {Post,Kind} from '../models/types';
 import type {SharedLocation} from '../services/sharedLocations';
+import type {EmergencyAlert} from '../services/emergencyAlerts';
+import {emergencyTypes} from '../data/emergencies';
 import {activeLocations} from '../domain/locations';
 setWorkerUrl(workerUrl);
-type Props={locations:SharedLocation[];posts:Post[];currentUserId:string;busy:boolean;error:string;onRefresh:()=>void;onShare:()=>void;onStop:()=>void};
+type Props={emergencies:EmergencyAlert[];locations:SharedLocation[];posts:Post[];currentUserId:string;busy:boolean;error:string;onRefresh:()=>void;onShare:()=>void;onStop:()=>void};
 const postColors:Record<Kind,string>={servicio:'#007c59',favor:'#df4978',emergencia:'#d73737'};
-function MapCanvas({locations,posts,currentUserId}:{locations:SharedLocation[];posts:Post[];currentUserId:string}){
+function MapCanvas({locations,posts,currentUserId,emergencies}:{locations:SharedLocation[];posts:Post[];currentUserId:string;emergencies:EmergencyAlert[]}){
  const container=useRef<HTMLDivElement>(null);const mapRef=useRef<MapLibreMap|null>(null);const centered=useRef(false);
  const [error,setError]=useState('');const [version,setVersion]=useState(0);
  useEffect(()=>{
@@ -38,20 +40,22 @@ function MapCanvas({locations,posts,currentUserId}:{locations:SharedLocation[];p
   };
   locations.forEach(row=>add(row.longitude,row.latitude,row.userId===currentUserId?'#007c59':'#ff9d00',row.userId===currentUserId?'Tu ubicación':row.displayName,'Compartida por tiempo limitado'));
   posts.filter(post=>post.active&&typeof post.latitude==='number'&&typeof post.longitude==='number').forEach(post=>add(post.longitude!,post.latitude!,postColors[post.kind],post.title,post.body));
+  emergencies.filter(row=>row.latitude!==null&&row.longitude!==null).forEach(row=>add(row.longitude!,row.latitude!,'#d92d42',row.displayName+' solicita ayuda',emergencyTypes.find(type=>type.id===row.type)?.label||row.type));
   if(count&&!centered.current){map.fitBounds(bounds,{padding:48,maxZoom:16,duration:0});centered.current=true}
   return()=>markers.forEach(marker=>marker.remove());
- },[locations,posts,currentUserId,version]);
+ },[locations,posts,currentUserId,emergencies,version]);
  return <><div className="shared-map-canvas" ref={container} aria-label="Mapa de ubicaciones compartidas"/>{error&&<div className="map-load-error" role="alert">{error}<button onClick={()=>{setError('');setVersion(v=>v+1)}}>Reintentar mapa</button></div>}</>;
 }
-export function SharedLocationsPanel({locations,posts,currentUserId,busy,error,onRefresh,onShare,onStop}:Props){
+export function SharedLocationsPanel({locations,posts,currentUserId,busy,error,onRefresh,onShare,onStop,emergencies}:Props){
  const [now,setNow]=useState(Date.now);
  useEffect(()=>{const timer=window.setInterval(()=>setNow(Date.now()),10000);return()=>window.clearInterval(timer)},[]);
  const active=activeLocations(locations,now),mine=active.find(row=>row.userId===currentUserId);
  const postCount=posts.filter(post=>post.active&&typeof post.latitude==='number'&&typeof post.longitude==='number').length;
- const count=postCount+active.length;
+ const alertCount=emergencies.filter(row=>row.latitude!==null&&row.longitude!==null).length;
+ const count=postCount+active.length+alertCount;
  return <section className="shared-map-screen">
-  <div className="shared-map-heading"><div><div className="eyebrow">MAPA VECINAL</div><h2>Publicaciones en el mapa</h2><p>{postCount} publicaciones · {active.length} ubicaciones temporales</p></div><button className="map-refresh" disabled={busy} onClick={onRefresh} aria-label="Actualizar ubicaciones"><RefreshCw size={18}/></button></div>
-  <div className="shared-map-frame"><MapCanvas locations={active} posts={posts} currentUserId={currentUserId}/>{!count&&<div className="map-empty"><MapPin size={20}/><span>Al publicar, añade un punto para que aparezca en este mapa.</span></div>}</div>
+  <div className="shared-map-heading"><div><div className="eyebrow">MAPA VECINAL</div><h2>Publicaciones en el mapa</h2><p>{postCount} publicaciones · {alertCount} alertas · {active.length} ubicaciones temporales</p></div><button className="map-refresh" disabled={busy} onClick={onRefresh} aria-label="Actualizar ubicaciones"><RefreshCw size={18}/></button></div>
+  <div className="shared-map-frame"><MapCanvas locations={active} posts={posts} currentUserId={currentUserId} emergencies={emergencies}/>{!count&&<div className="map-empty"><MapPin size={20}/><span>Al publicar, añade un punto para que aparezca en este mapa.</span></div>}</div>
   {error&&<p className="map-error" role="alert">{error}</p>}
   <div className="map-share-card"><div className="map-share-title"><span className="map-share-icon"><LocateFixed size={19}/></span><div><strong>{mine?'Tu ubicación está compartida':'Comparte tu ubicación aproximada'}</strong><span>{mine?<><Clock3 size={13}/> Visible por {Math.max(0,Math.ceil((Date.parse(mine.expiresAt)-now)/60000))} min más</>:'Dejará de ser visible en 30 minutos.'}</span></div></div>
   {mine?<button className="outline map-stop" disabled={busy} onClick={onStop}><StopCircle size={17}/> Dejar de compartir</button>:<button className="primary green" disabled={busy} onClick={onShare}><Share2 size={18}/>{busy?'Obteniendo ubicación…':'Compartir en el mapa'}</button>}

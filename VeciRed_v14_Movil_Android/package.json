@@ -1,6 +1,6 @@
 {
   "name": "runared-estanque-mobile",
-  "version": "15.0.0",
+  "version": "18.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "android:open": "cap open android",
     "android:run": "npm run android:sync && cap run android",
     "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug",
-    "test": "node --experimental-strip-types --test tests/pond.test.ts tests/phone.test.mjs tests/recommendations.test.ts tests/locations.test.ts"
+    "test": "node --experimental-strip-types --test tests/pond.test.ts tests/phone.test.mjs tests/recommendations.test.ts tests/locations.test.ts tests/v18.test.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.0",
