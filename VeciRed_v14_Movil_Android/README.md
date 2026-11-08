@@ -1,94 +1,76 @@
-> **Versión v14:** Consulta primero `GUIA_SUPABASE_PARA_EL_EQUIPO.md`. El número WhatsApp se almacena en `private_contacts`, no en `profiles`. El SQL v14 es para una base NUEVA, no para ejecutar encima del esquema v13 sin migración.
+# RunaRed · VeciRed v15
 
-# VeciRed v13 — frontend móvil Android (Capacitor)
+Demo Android con React, TypeScript, Vite, Capacitor y Supabase. Integra las funciones de la v14 con las mejoras de la rama v16.
 
-Esta versión parte del **ZIP v10 proporcionado por el equipo**. Conserva el diseño del estanque, filtros, mascotas, publicaciones, hábitats y modo noche. No es Expo ni Flutter. El navegador se usa solo para desarrollo; la entrega es la app Android.
+## Versiones
 
-## Cambios del frontend
+- Esta integración: rama `frontend/vecired-v15`.
+- Base v14 terminada: commit `00c93b7` en `main`.
+- Origen visual y recomendaciones: `origin/frontend/runared-v16`, commit `c2d8240`.
+- Respaldo v10: `frontend/vecired-v10`.
 
-- Emergencias: botón superior con sismo, huayco, incendio, robo, inundación y urgencia médica; recomendaciones y enlaces `tel:` a Policía 105, Bomberos 116, Defensa Civil 115 y SAMU 106 (cobertura según localidad). **La app no realiza llamadas automáticamente.** Verificar números/cobertura antes de la entrega pública.
-- Compartir ubicación: permiso de GPS al tocar el botón, redondeo a ~0.01° (ubicación aproximada), hoja nativa de compartir o WhatsApp como alternativa. **No se guarda ni publica la ubicación en Supabase.**
-- WhatsApp: sin chat, audio ni videollamadas internas. Contacto mediante `wa.me` solo si el vecino optó por facilitar su número peruano válido. No se muestran contactos falsos en demo.
-- Icono de casa: vuelve a la bienvenida, **no cierra la sesión**. Cerrar sesión es una acción distinta en el perfil.
-- Una mascota por vecino, independientemente de sus publicaciones. Mantiene la paleta y diseño del prototipo.
-- Con credenciales Supabase se habilita registro/inicio de sesión y lectura/creación de publicaciones reales; sin credenciales se ofrece demo local. La demo NO es un backend real.
+El código de la v15 sigue en **`VeciRed_v14_Movil_Android/`** para conservar la configuración local de Android Studio. La versión del paquete web es 15.0.0; el identificador Android continúa siendo `com.vecired.app`.
 
-## Instalar y ejecutar Android
+[Comparación e integración](../docs/COMPARACION_V14_V16_Y_V15.md) · [Migración Supabase](MIGRACION_V15.md)
 
-1. Instalar Node.js, Android Studio y Android SDK.
-2. Abrir terminal en la carpeta donde está `package.json`.
-3. `npm install`
-4. `npm run typecheck`
-5. `npm run build`
-6. `npx cap add android` **solo si no existe** la carpeta `android/`.
-7. `npx cap sync android`
-8. `npx cap open android`
-9. En Android Studio elegir `Medium Phone API` (emulador) y configuración `app`; pulsar Run ▶. No se necesita cable USB.
-10. Para generar APK debug: Android Studio > Build > Build APK(s). La ruta habitual es `android/app/build/outputs/apk/debug/app-debug.apk`.
+## Qué incluye
 
-**Al modificar el frontend:** ejecutar `npm run android:sync` antes de volver a compilar en Android Studio. Si se está usando una carpeta `android/` anterior, respaldarla y ejecutar `npx cap sync android` en ella.
+- Una mascota por vecino; servicios, favores y ayuda comunitaria.
+- Resolver publicaciones propias, conservar historial y eliminar con confirmación.
+- Actualización cada 15 segundos, indicador de carga y aviso de desconexión que conserva los datos visibles.
+- WhatsApp y apertura del marcador telefónico con consentimiento independiente para llamadas.
+- Identidad RunaRed, seis mascotas animadas, seis fondos, navegación inferior y modo noche.
+- Compatibilidad con vizcacha, alpaca y jardín de los perfiles antiguos.
+- Recomendaciones de vecinos y lugares, reconocimiento sin valoraciones ficticias y enlaces validados de Google Maps.
+- Confirmación antes de activar la vista de ayuda de emergencia.
 
-## Guía para el compañero de Supabase
+## Abrir el proyecto
 
-### Paso 1: crear el proyecto
-
-Crear proyecto en Supabase > Project Settings > API. Copiar **Project URL** y **publishable key/anon key** (nunca `service_role`). Crear `.env` desde `.env.example`:
-
-```
-VITE_SUPABASE_URL=https://TU_PROYECTO.supabase.co
-VITE_SUPABASE_ANON_KEY=TU_CLAVE_PUBLICA
+```bash
+git clone --branch frontend/vecired-v15 https://github.com/Acund01/VeciRed-Demo.git
+cd VeciRed-Demo/VeciRed_v14_Movil_Android
+npm ci
+npm run dev
 ```
 
-Las variables `VITE_` se incluyen en la app compilada: **solo claves públicas**. Configurar Auth > Providers > Email. Para las pruebas decidir si se exige confirmación de correo; si se exige, cada vecino debe confirmar antes de iniciar sesión.
+Requiere Node.js 22.18+ o compatible, Android Studio y JDK 21 para Android. En PowerShell se puede usar `npm.cmd`.
 
-### Paso 2: esquema SQL
+Crea `.env` desde `.env.example` con la URL base del proyecto Supabase y su clave pública. No añadas `/rest/v1/` a la URL. Nunca uses `service_role` en el frontend. Sin variables Supabase se utiliza una demo local.
 
-Abrir `src/infrastructure/supabase-schema.sql` y ejecutarlo en **SQL Editor de un proyecto nuevo de pruebas**. El script crea `profiles`, `posts`, trigger de creación de perfil y RLS inicial. No aplicarlo directamente a una base que ya tenga esas tablas: habría que hacer migraciones.
+## Supabase existente: siguiente paso pendiente
 
-### Paso 3: contratos ya usados por el frontend
+Las migraciones están **preparadas, sin ejecutar en la base remota**. Revisa [MIGRACION_V15.md](MIGRACION_V15.md). No repitas el esquema completo sobre las tablas actuales.
 
-| Acción | Implementación | Tabla / campo |
-|---|---|---|
-| Crear cuenta | `src/infrastructure/supabase.ts` → `signUp` | Supabase Auth; trigger crea `profiles` |
-| Iniciar sesión | `signIn` y `restoreSession` | Auth + `profiles` |
-| Mascota, hábitat, hobby | `profileGateway.updatePreferences` | `profiles.animal`, `habitat`, `hobby` |
-| WhatsApp opcional | Metadatos de registro y perfil | `profiles.phone` (formato `519XXXXXXXX`) |
-| Vecinos del estanque | `neighborhoodGateway.listNeighbors` | `profiles` |
-| Publicaciones | `listPosts`, `createPost`, `closePost` | `posts` |
-| Filtros / una mascota | `src/domain/pond.ts` | Agrupa por `authorId`, sin duplicar mascotas |
-| Ubicación compartida | `src/services/location.ts` y `external.ts` | **No persiste en DB** |
-| Emergencias / números | `src/data/emergencies.ts` | Datos locales, no requieren backend |
+1. `20261108_posts_delete.sql`: eliminación solo por el autor.
+2. `20261108_call_consent.sql`: consentimiento y consultas de llamadas.
+3. `20261108_v15_recommendations.sql`: nuevos animales/hábitats, recomendaciones y RLS.
 
-### Paso 4: pruebas de integración
+Están en `src/infrastructure/migrations/`. Para un proyecto completamente nuevo se utiliza únicamente `src/infrastructure/supabase-schema.sql`, que ya incluye todo.
 
-1. Crear dos cuentas con correos distintos; confirmar email si está activado.
-2. Comprobar que cada registro crea exactamente una fila `profiles`.
-3. Iniciar sesión con A, publicar un servicio y un favor. Comprobar que se muestra **una sola mascota** para A.
-4. Iniciar sesión con B; verificar que ve las publicaciones y que el botón WhatsApp solo se habilita si A compartió un número.
-5. Comprobar RLS: B no debe poder modificar las publicaciones de A.
-6. Verificar que la ubicación no se almacena en Supabase y que el teléfono no se muestra a usuarios anónimos.
-7. Probar la app en emulador y dispositivo físico antes de entregar APK.
+La demo comparte una comunidad entre usuarios autenticados. Antes de un lanzamiento público faltan membresía verificada y permisos por comunidad, moderación y controles de abuso.
 
-### Seguridad y funcionalidades pendientes de producción
+## Verificación y Android
 
-**Importante:** el SQL incluido es un **punto de partida**, no seguridad de producción. Actualmente las políticas de lectura permiten a cualquier usuario autenticado consultar perfiles y publicaciones. Antes de desplegar VeciRed para vecinos reales se debe implementar: comunidades/sectores verificados, membresía y RLS por comunidad, consentimiento y privacidad de teléfonos, moderación, validación de emergencias, anti-spam, bloqueo/denuncias, control de abuso y revisión de políticas de datos personales. No presentar indicadores demo como usuarios realmente conectados.
+```bash
+npm test
+npm run build
+npm run android:sync
+npm run android:open
+```
 
-Los enlaces de WhatsApp y `tel:` dependen de aplicaciones/servicios del teléfono; probarlos en un dispositivo físico. El emulador puede no tener WhatsApp instalado ni servicio telefónico.
+Selecciona JDK 21 y un emulador en Android Studio y pulsa Run. La carpeta `android/` ya está incluida.
 
-## Estructura
+APK de depuración:
+`VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk`.
 
-- `src/App.tsx`: interfaz y coordinación de estado (vistas móviles).
-- `src/components/Mascot.tsx`: presentación del animal.
-- `src/domain/pond.ts`: agrupación y filtros.
-- `src/models/types.ts`: modelos TypeScript.
-- `src/data/emergencies.ts`: incidentes y teléfonos.
-- `src/services/location.ts`: geolocalización.
-- `src/services/external.ts`: WhatsApp y compartir ubicación.
-- `src/services/repository.ts`: almacenamiento local de demo.
-- `src/infrastructure/supabase.ts`: cliente y autenticación.
-- `src/infrastructure/supabaseGateway.ts`: adaptadores de tablas.
-- `src/infrastructure/supabase-schema.sql`: SQL inicial.
+Para compilar en PowerShell desde la carpeta de la app:
 
-## Verificación
+```powershell
+.\android\gradlew.bat -p android assembleDebug
+```
 
-Se revisó la sintaxis de los archivos TS/TSX. **No se logró instalar dependencias en este entorno**, por lo que el `npm run build` y las pruebas en Android Studio deben realizarse localmente antes de afirmar que la app compila sin errores.
+En la ruta actual, que contiene `°`, se ha usado `-Pandroid.overridePathCheck=true`. Para compartir el proyecto se recomienda una ruta sencilla sin ese carácter.
+
+La compilación web y las nueve pruebas automatizadas pasaron. Las pruebas completas de recomendaciones y autorización de llamadas requieren aplicar antes las migraciones; el emulador puede abrir el marcador, pero no realiza llamadas reales.
+
+No se publica `.env`, `node_modules/`, `dist/` ni el APK en Git. El equipo configura su `.env` o recibe el APK por separado.

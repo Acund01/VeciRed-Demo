@@ -1,6 +1,6 @@
 export type Kind = 'servicio'|'favor'|'emergencia';
-export type Animal = 'castor'|'cuy'|'vizcacha'|'alpaca';
-export type Habitat = 'estanque'|'andes'|'jardin';
+export type Animal = 'castor'|'cuy'|'gallito'|'llama'|'vicuna'|'oso'|'vizcacha'|'alpaca';
+export type Habitat = 'estanque'|'andes'|'bosque'|'costa'|'valle'|'nublado'|'jardin';
 export type Filter = 'todos'|Kind;
 export type EmergencyResource = 'agua'|'energia'|'alimentos'|'refugio'|'salud'|'transporte'|'otro';
 export interface Neighbor { id:string; name:string; animal:Animal; habitat:Habitat; x:number; y:number; hobby:string; sector:string; status:string; rating:number; phone?:string; }
