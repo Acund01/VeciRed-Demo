@@ -1,7 +1,7 @@
 # Activar la v15 en Supabase
 
 La v15 integra las novedades de `frontend/runared-v17-mapa-ubicaciones` (11af62e).
-**La migración se probó en PostgreSQL 16 local. Su ejecución en tu proyecto Supabase remoto sigue pendiente.**
+**La migración se probó en PostgreSQL 16 local. El responsable del proyecto confirmó su ejecución manual en Supabase con “Success. No rows returned”. Las pruebas funcionales remotas entre dos cuentas siguen pendientes.**
 
 ## Tu base existente
 

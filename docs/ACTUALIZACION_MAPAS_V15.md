@@ -22,7 +22,7 @@ Archivo para la base existente: [ACTUALIZAR_BASE_EXISTENTE_V15.sql](../VeciRed_v
 
 Reúne cuatro migraciones en una transacción; no vuelve a crear la base. RLS protege las escrituras por autor y las ubicaciones vencidas. La limpieza física de ubicaciones vencidas requiere invocar la función o programarla; la interfaz no promete borrado físico exacto en 30 minutos.
 
-La base remota continúa pendiente de actualización hasta ejecutarlo en Supabase. La cartografía necesita conexión a Internet y transmite las solicitudes de mapa al proveedor. Las ubicaciones son visibles para usuarios autenticados de la demo, sin aislamiento por comunidad.
+El responsable del proyecto confirmó la ejecución manual del instalador en Supabase con “Success. No rows returned”. Esta confirmación no sustituye las pruebas funcionales entre dos cuentas. La cartografía necesita conexión a Internet y transmite las solicitudes de mapa al proveedor. Las ubicaciones son visibles para usuarios autenticados de la demo, sin aislamiento por comunidad.
 
 ## Verificación realizada
 

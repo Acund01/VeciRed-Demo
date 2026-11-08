@@ -41,9 +41,9 @@ Crea `.env` desde `.env.example` con la URL base del proyecto Supabase y su clav
 
 La v15 incorpora mapa vecinal, puntos opcionales en publicaciones y ubicaciones voluntarias durante 30 minutos de la rama v17. Consulta [el informe de integración](docs/ACTUALIZACION_MAPAS_V15.md).
 
-## Supabase existente: siguiente paso pendiente
+## Supabase existente
 
-El instalador completo está en **`supabase/ACTUALIZAR_BASE_EXISTENTE_V15.sql`**. Se probó en PostgreSQL local, pero sigue **sin ejecutar en la base remota**. Revisa [MIGRACION_V15.md](VeciRed_v14_Movil_Android/MIGRACION_V15.md). No repitas el esquema completo sobre las tablas actuales.
+El instalador completo está en **`supabase/ACTUALIZAR_BASE_EXISTENTE_V15.sql`**. Se probó en PostgreSQL local y el responsable del proyecto confirmó su ejecución manual en Supabase con **“Success. No rows returned”**. Falta completar las pruebas funcionales remotas entre dos cuentas. Revisa [MIGRACION_V15.md](VeciRed_v14_Movil_Android/MIGRACION_V15.md). No repitas el esquema completo sobre las tablas actuales.
 
 1. `20261108_posts_delete.sql`: eliminación solo por el autor.
 2. `20261108_call_consent.sql`: consentimiento y consultas de llamadas.
@@ -78,6 +78,6 @@ Para compilar en PowerShell desde la carpeta de la app:
 
 En la ruta actual, que contiene `°`, se ha usado `-Pandroid.overridePathCheck=true`. Para compartir el proyecto se recomienda una ruta sencilla sin ese carácter.
 
-La compilación web y las doce pruebas automatizadas pasaron. Las pruebas completas de recomendaciones y autorización de llamadas requieren aplicar antes las migraciones; el emulador puede abrir el marcador, pero no realiza llamadas reales.
+La compilación web y las doce pruebas automatizadas pasaron. Las pruebas completas de recomendaciones y autorización de llamadas entre dos cuentas siguen pendientes; el emulador puede abrir el marcador, pero no realiza llamadas reales.
 
 No se publica `.env`, `node_modules/`, `dist/` ni el APK en Git. El equipo configura su `.env` o recibe el APK por separado.
