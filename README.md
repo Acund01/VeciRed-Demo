@@ -1,131 +1,83 @@
-# VeciRed · Mi estanque — v14
+# RunaRed · VeciRed v15
 
-Aplicación móvil Android para conectar vecinos, compartir servicios y favores y coordinar ayuda comunitaria mediante un estanque virtual con mascotas.
-
-Desarrollada con **React, TypeScript, Vite y Capacitor 7**, con integración a **Supabase** para autenticación, perfiles y publicaciones.
+Demo Android con React, TypeScript, Vite, Capacitor y Supabase. Integra las funciones de la v14 con las mejoras de la rama v16.
 
 ## Versiones
 
-- **main:** versión actual v14, en `VeciRed_v14_Movil_Android/`.
-- **frontend/vecired-v10:** [respaldo de la v10](https://github.com/Acund01/VeciRed-Demo/tree/frontend/vecired-v10).
-- **frontend/vecired-v14:** rama de desarrollo de la v14.
+- Esta integración: rama `frontend/vecired-v15`.
+- Base v14 terminada: commit `00c93b7` en `main`.
+- Origen visual y recomendaciones: `origin/frontend/runared-v16`, commit `c2d8240`.
+- Respaldo v10: `frontend/vecired-v10`.
 
-## Funcionalidades
+El código de la v15 sigue en **`VeciRed_v14_Movil_Android/`** para conservar la configuración local de Android Studio. La versión del paquete web es 15.0.0; el identificador Android continúa siendo `com.vecired.app`.
 
-- Estanque con una mascota por vecino y filtros de servicios, favores y emergencias.
-- Publicación de ofertas o solicitudes de apoyo.
-- Perfil con mascota, hábitat y afición.
-- Modo noche y panel de emergencias con enlaces telefónicos.
-- Contacto externo por WhatsApp cuando el vecino proporciona su número.
-- Apertura del marcador telefónico, con permiso independiente que el vecino puede habilitar o revocar desde su perfil.
-- Resolver publicaciones propias y eliminarlas con confirmación; las resueltas quedan en el historial del autor.
-- Compartir ubicación aproximada bajo petición.
-- Registro, inicio de sesión, restauración de sesión y persistencia de perfiles y publicaciones mediante Supabase, una vez configurado.
-- Demostración local cuando no hay credenciales Supabase.
+[Comparación e integración](docs/COMPARACION_V14_V16_Y_V15.md) · [Migración Supabase](VeciRed_v14_Movil_Android/MIGRACION_V15.md)
 
-La v14 utiliza WhatsApp y el marcador del teléfono para contactar; no incluye chat, audio ni videollamadas dentro de la aplicación. El estanque consulta perfiles y publicaciones cada 15 segundos mientras está visible y al volver a la app o recuperar conexión. Esta actualización periódica no requiere habilitar Realtime; si falla, conserva los datos visibles y permite reintentar. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
+## Qué incluye
 
-## Requisitos
+- Una mascota por vecino; servicios, favores y ayuda comunitaria.
+- Resolver publicaciones propias, conservar historial y eliminar con confirmación.
+- Actualización cada 15 segundos, indicador de carga y aviso de desconexión que conserva los datos visibles.
+- WhatsApp y apertura del marcador telefónico con consentimiento independiente para llamadas.
+- Identidad RunaRed, seis mascotas animadas, seis fondos, navegación inferior y modo noche.
+- Compatibilidad con vizcacha, alpaca y jardín de los perfiles antiguos.
+- Recomendaciones de vecinos y lugares, reconocimiento sin valoraciones ficticias y enlaces validados de Google Maps.
+- Confirmación antes de activar la vista de ayuda de emergencia.
 
-- Node.js 22 o superior y npm.
-- Android Studio, Android SDK y Platform Tools.
-- JDK 21 para compilar Android.
-- Emulador o teléfono con depuración USB; para probar WhatsApp se recomienda un teléfono con esa aplicación.
-
-## Instalación y vista previa
+## Abrir el proyecto
 
 ```bash
-git clone https://github.com/Acund01/VeciRed-Demo.git
+git clone --branch frontend/vecired-v15 https://github.com/Acund01/VeciRed-Demo.git
 cd VeciRed-Demo/VeciRed_v14_Movil_Android
-npm install
+npm ci
 npm run dev
 ```
 
-Abre la dirección que muestra Vite. Todos los comandos siguientes se ejecutan dentro de `VeciRed_v14_Movil_Android`.
+Requiere Node.js 22.18+ o compatible, Android Studio y JDK 21 para Android. En PowerShell se puede usar `npm.cmd`.
 
-En PowerShell, si se bloquea `npm.ps1` o `npx.ps1`, utiliza `npm.cmd` y `npx.cmd`.
+Crea `.env` desde `.env.example` con la URL base del proyecto Supabase y su clave pública. No añadas `/rest/v1/` a la URL. Nunca uses `service_role` en el frontend. Sin variables Supabase se utiliza una demo local.
 
-## Configurar Supabase
+## Mapas y ubicaciones integrados
 
-Consulta la [guía de Supabase para el equipo](VeciRed_v14_Movil_Android/GUIA_SUPABASE_PARA_EL_EQUIPO.md).
+La v15 incorpora mapa vecinal, puntos opcionales en publicaciones y ubicaciones voluntarias durante 30 minutos de la rama v17. Consulta [el informe de integración](docs/ACTUALIZACION_MAPAS_V15.md).
 
-1. Crea un proyecto Supabase de pruebas.
-2. Revisa `src/infrastructure/supabase-schema.sql` y aplícalo a una base **nueva**. Si ya existen tablas, prepara una migración en lugar de repetir el script.
-3. Habilita acceso por correo y contraseña y configura la confirmación de correo.
-4. Copia `.env.example` a `.env` y completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` con la URL y la clave pública.
-5. Reinicia Vite o recompila y sincroniza Android después de cambiar esas variables.
+## Supabase existente
 
-El teléfono se almacena en `private_contacts` y se consulta mediante una función al contactar. Las políticas actuales permiten lecturas amplias a usuarios autenticados: falta restringirlas por comunidad verificada. Nunca incluyas claves secretas o `service_role` en el frontend.
+El instalador completo está en **`supabase/ACTUALIZAR_BASE_EXISTENTE_V15.sql`**. Se probó en PostgreSQL local y el responsable del proyecto confirmó su ejecución manual en Supabase con **“Success. No rows returned”**. Falta completar las pruebas funcionales remotas entre dos cuentas. Revisa [MIGRACION_V15.md](VeciRed_v14_Movil_Android/MIGRACION_V15.md). No repitas el esquema completo sobre las tablas actuales.
 
-## Actualizaciones de una base v14 existente
+1. `20261108_posts_delete.sql`: eliminación solo por el autor.
+2. `20261108_call_consent.sql`: consentimiento y consultas de llamadas.
+3. `20261108_v15_recommendations.sql`: nuevos animales/hábitats, recomendaciones y RLS.
+4. `20261108_v15_locations.sql`: coordenadas opcionales y ubicaciones temporales.
 
-Las migraciones locales están preparadas, pero su aplicación al proyecto remoto queda pendiente:
+El instalador reúne los cuatro scripts; usa una sola opción de instalación.
 
-1. `src/infrastructure/migrations/20261108_posts_delete.sql`: eliminación solo por el autor.
-2. `src/infrastructure/migrations/20261108_call_consent.sql`: permiso de llamadas desactivado por defecto y funciones de consulta y autorización.
+Están en `src/infrastructure/migrations/`. Para un proyecto completamente nuevo se utiliza únicamente `src/infrastructure/supabase-schema.sql`, que ya incluye todo.
 
-No ejecutar de nuevo el esquema completo sobre una base existente. Hasta aplicar la segunda migración, las preferencias y contactos de llamada indicarán que no están disponibles. Consulta [las pruebas de publicaciones y llamadas](VeciRed_v14_Movil_Android/PRUEBAS_PUBLICACIONES_Y_LLAMADAS.md).
+La demo comparte una comunidad entre usuarios autenticados. Antes de un lanzamiento público faltan membresía verificada y permisos por comunidad, moderación y controles de abuso.
 
-## Ejecutar en Android
-
-La v14 incluye el proyecto nativo en `android/`. Después de instalar las dependencias y configurar `.env`:
+## Verificación y Android
 
 ```bash
-npm run android:sync
-npm run android:open
-```
-
-En Android Studio, espera la sincronización de Gradle, selecciona JDK 21, elige un dispositivo y pulsa **Run**.
-
-Después de modificar React:
-
-```bash
-npm run android:sync
-npm run android:open
-```
-
-Ejecuta `cap add android` únicamente cuando no exista `android/`.
-
-## Generar APK de depuración en Windows
-
-Después de generar el proyecto nativo:
-
-```bash
-npm run android:apk
-```
-
-Resultado esperado:
-
-```text
-VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk
-```
-
-Si Gradle rechaza una ruta de Windows con caracteres como `°`, utiliza una ruta sin esos caracteres.
-
-## Estructura
-
-```text
-VeciRed_v14_Movil_Android/
-├── public/
-├── src/
-│   ├── App.tsx               # Pantallas y estado
-│   ├── components/           # Mascotas
-│   ├── data/                 # Demostración y contactos de emergencia
-│   ├── domain/               # Agrupación y filtros
-│   ├── infrastructure/       # Supabase, contratos y SQL
-│   ├── models/               # Tipos
-│   ├── services/             # Ubicación, WhatsApp y persistencia local
-│   └── styles.css
-├── capacitor.config.ts
-├── GUIA_SUPABASE_PARA_EL_EQUIPO.md
-└── package.json
-```
-
-## Verificación
-
-```bash
-npm run typecheck
+npm test
 npm run build
+npm run android:sync
+npm run android:open
 ```
 
-La v14 pasó la comprobación de TypeScript, la compilación Vite y la generación del APK con JDK 21. Se verificó su apertura en el emulador. En las pruebas manuales del equipo se confirmó el ingreso de una cuenta y la persistencia de una publicación en Supabase. Sigue pendiente la prueba completa entre dos dispositivos.
+Selecciona JDK 21 y un emulador en Android Studio y pulsa Run. La carpeta `android/` ya está incluida.
+
+APK de depuración:
+`VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk`.
+
+Para compilar en PowerShell desde la carpeta de la app:
+
+```powershell
+.\android\gradlew.bat -p android assembleDebug
+```
+
+En la ruta actual, que contiene `°`, se ha usado `-Pandroid.overridePathCheck=true`. Para compartir el proyecto se recomienda una ruta sencilla sin ese carácter.
+
+La compilación web y las doce pruebas automatizadas pasaron. Las pruebas completas de recomendaciones y autorización de llamadas entre dos cuentas siguen pendientes; el emulador puede abrir el marcador, pero no realiza llamadas reales.
+
+No se publica `.env`, `node_modules/`, `dist/` ni el APK en Git. El equipo configura su `.env` o recibe el APK por separado.

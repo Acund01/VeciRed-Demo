@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">VeciRed</string>
-    <string name="title_activity_main">VeciRed</string>
+    <string name="app_name">RunaRed</string>
+    <string name="title_activity_main">RunaRed</string>
     <string name="package_name">com.vecired.app</string>
     <string name="custom_url_scheme">com.vecired.app</string>
 </resources>

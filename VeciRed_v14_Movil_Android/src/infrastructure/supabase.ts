@@ -15,7 +15,7 @@ export async function signUp(email:string,password:string,name:string,phone?:str
  const {error}=await supabase.auth.signUp({email,password,options:{data:{display_name:name,phone:phone||null,animal,habitat,hobby}}});if(error)throw error;
  // Backend: create profiles via secure auth.users trigger; don't trust a client-supplied identity.
 }
-export async function signOut(){if(supabase)await supabase.auth.signOut()}
+export async function signOut(){if(supabase){const {error}=await supabase.auth.signOut();if(error)throw error}}
 
 export async function restoreSession():Promise<UserProfile|null>{
  if(!supabase)return null;const {data:{session},error}=await supabase.auth.getSession();if(error||!session)return null;
