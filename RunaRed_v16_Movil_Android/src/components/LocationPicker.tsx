@@ -8,9 +8,9 @@ import {requestApproximateLocation,roundApproximateCoordinates} from '../service
 setWorkerUrl(workerUrl);
 
 export type MapPoint={latitude:number;longitude:number};
-type Props={initialPoint:MapPoint|null;onCancel:()=>void;onChoose:(point:MapPoint)=>void};
+type Props={initialPoint:MapPoint|null;onCancel:()=>void;onChoose:(point:MapPoint)=>void;purpose?:'post'|'recommendation'};
 
-export function LocationPicker({initialPoint,onCancel,onChoose}:Props){
+export function LocationPicker({initialPoint,onCancel,onChoose,purpose='post'}:Props){
  const container=useRef<HTMLDivElement>(null);
  const marker=useRef<Marker|null>(null);
  const interacted=useRef(false);
@@ -51,12 +51,12 @@ export function LocationPicker({initialPoint,onCancel,onChoose}:Props){
  },[]);
  return <div className="overlay location-picker-overlay" onClick={onCancel}>
   <section className="sheet location-picker-sheet" onClick={event=>event.stopPropagation()}>
-   <div className="sheet-top"><div><div className="eyebrow">PUNTO DEL AVISO</div><h2>Elige dónde sucede</h2></div><button className="close" onClick={onCancel} aria-label="Cerrar"><X size={20}/></button></div>
-   <p className="location-picker-help">Si das permiso, centraremos el mapa en tu zona. Esa lectura no se guarda ni se comparte. Mueve el mapa y toca un punto; el aviso se publicará aproximado a unos 100 m.</p>
+   <div className="sheet-top"><div><div className="eyebrow">{purpose==='post'?'PUNTO DEL AVISO':'LUGAR RECOMENDADO'}</div><h2>{purpose==='post'?'Elige dónde sucede':'Elige el lugar'}</h2></div><button className="close" onClick={onCancel} aria-label="Cerrar"><X size={20}/></button></div>
+   <p className="location-picker-help">Si das permiso, centraremos el mapa en tu zona. Esa lectura no se guarda ni se comparte. Mueve el mapa y toca un punto; guardaremos una ubicación aproximada a unos 100 m.</p>
    <div className="location-picker-frame"><div className="location-picker-canvas" ref={container}/><div className="location-picker-hint"><MapPin size={15}/> Toca el mapa para poner el pin</div></div>
    {locationStatus&&<p className="location-picker-status" role="status">{locationStatus}</p>}
    {point&&<p className="location-picker-selected"><MapPin size={15}/> Punto seleccionado: {point.latitude.toFixed(3)}, {point.longitude.toFixed(3)}</p>}
-   <p className="location-picker-disclosure">Este punto aparecerá a todos los usuarios de RunaRed mientras el aviso esté activo.</p>
+   <p className="location-picker-disclosure">{purpose==='post'?'Este punto aparecerá a todos los usuarios de RunaRed mientras el aviso esté activo.':'La ubicación aproximada aparecerá en el muro de recomendaciones de la comunidad.'}</p>
    <div className="location-picker-actions"><button className="outline" onClick={onCancel}>Cancelar</button><button className="primary green" disabled={!point} onClick={()=>point&&onChoose(point)}><Check size={17}/> Usar este punto</button></div>
   </section>
  </div>;
