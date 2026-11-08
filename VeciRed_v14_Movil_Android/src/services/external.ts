@@ -9,6 +9,11 @@ export function openWhatsApp(phone:string,message:string){
  const valid=normalizePeruPhone(phone);if(!valid)return false;
  window.open(`https://wa.me/${valid}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer');return true;
 }
+/** Abre el marcador; el usuario decide si realiza la llamada. */
+export function openPhoneDialer(phone:string){
+ const valid=normalizePeruPhone(phone);if(!valid)return false;
+ window.location.href='tel:+'+valid;return true;
+}
 export async function shareLocation(lat:number,lon:number){
  const url=`https://www.google.com/maps?q=${lat.toFixed(2)},${lon.toFixed(2)}`;
  const message='Mi ubicación aproximada para coordinar ayuda vecinal: '+url;

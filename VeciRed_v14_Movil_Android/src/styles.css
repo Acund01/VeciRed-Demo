@@ -27,6 +27,20 @@ body{background:#f8faf4;padding:0!important}
 .resource-choices button{border:1px solid #e4ded9;border-radius:20px;background:#fff;padding:7px 10px;font-size:11px;color:#574c43}
 .resource-choices button.chosen{background:#ffedf0;border-color:#ed657b;color:#a51d38;font-weight:800}
 
+.sync-indicator{display:inline-flex;align-items:center;gap:5px;min-height:24px}
+.loading-spinner{animation:sync-spin .9s linear infinite}
+@keyframes sync-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.loading-spinner{animation:none}}
+.post-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.post-actions .outline{width:auto;flex:1;min-width:130px;margin:0;font-size:12px;min-height:44px}
+.delete-post{color:#a82934;border-color:#e8b8bf}
+.post-mini .resolved-label{color:#007c59;font-weight:700}
+.delete-overlay{z-index:30}
+.app.dark .post-mini p{color:#d1d9d5}
+.app.dark .post-mini .resolved-label{color:#8ae5bd}
+.sheet .call-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.settings-sheet .call-consent input{width:22px;height:22px;flex-shrink:0;margin:0;accent-color:#007c59}
+.call-permission .outline{min-height:44px}
 /* v13: acciones móviles y emergencias */
 .header-actions{display:flex;gap:8px;align-items:center}.header-actions .alert-btn{flex-shrink:0}
 .emergency-sheet{max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;padding-bottom:max(24px,env(safe-area-inset-bottom))}

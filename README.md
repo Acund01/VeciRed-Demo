@@ -17,11 +17,13 @@ Desarrollada con **React, TypeScript, Vite y Capacitor 7**, con integración a *
 - Perfil con mascota, hábitat y afición.
 - Modo noche y panel de emergencias con enlaces telefónicos.
 - Contacto externo por WhatsApp cuando el vecino proporciona su número.
+- Apertura del marcador telefónico, con permiso independiente que el vecino puede habilitar o revocar desde su perfil.
+- Resolver publicaciones propias y eliminarlas con confirmación; las resueltas quedan en el historial del autor.
 - Compartir ubicación aproximada bajo petición.
 - Registro, inicio de sesión, restauración de sesión y persistencia de perfiles y publicaciones mediante Supabase, una vez configurado.
 - Demostración local cuando no hay credenciales Supabase.
 
-La v14 utiliza WhatsApp para contactar: no incluye chat, llamadas ni videollamadas internas. El estanque consulta perfiles y publicaciones cada 15 segundos mientras está visible y al volver a la app o recuperar conexión. Esta actualización periódica no requiere habilitar Realtime; si falla, conserva los datos visibles y permite reintentar. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
+La v14 utiliza WhatsApp y el marcador del teléfono para contactar; no incluye chat, audio ni videollamadas dentro de la aplicación. El estanque consulta perfiles y publicaciones cada 15 segundos mientras está visible y al volver a la app o recuperar conexión. Esta actualización periódica no requiere habilitar Realtime; si falla, conserva los datos visibles y permite reintentar. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
 
 ## Requisitos
 
@@ -54,6 +56,15 @@ Consulta la [guía de Supabase para el equipo](VeciRed_v14_Movil_Android/GUIA_SU
 5. Reinicia Vite o recompila y sincroniza Android después de cambiar esas variables.
 
 El teléfono se almacena en `private_contacts` y se consulta mediante una función al contactar. Las políticas actuales permiten lecturas amplias a usuarios autenticados: falta restringirlas por comunidad verificada. Nunca incluyas claves secretas o `service_role` en el frontend.
+
+## Actualizaciones de una base v14 existente
+
+Las migraciones locales están preparadas, pero su aplicación al proyecto remoto queda pendiente:
+
+1. `src/infrastructure/migrations/20261108_posts_delete.sql`: eliminación solo por el autor.
+2. `src/infrastructure/migrations/20261108_call_consent.sql`: permiso de llamadas desactivado por defecto y funciones de consulta y autorización.
+
+No ejecutar de nuevo el esquema completo sobre una base existente. Hasta aplicar la segunda migración, las preferencias y contactos de llamada indicarán que no están disponibles. Consulta [las pruebas de publicaciones y llamadas](VeciRed_v14_Movil_Android/PRUEBAS_PUBLICACIONES_Y_LLAMADAS.md).
 
 ## Ejecutar en Android
 
