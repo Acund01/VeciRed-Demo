@@ -1,122 +1,121 @@
-# VeciRed · Mi estanque
+# VeciRed · Mi estanque — v14
 
-Aplicación móvil Android para conectar vecinos, compartir servicios y favores, y organizar recursos de emergencia mediante un estanque virtual con mascotas.
+Aplicación móvil Android para conectar vecinos, compartir servicios y favores y coordinar ayuda comunitaria mediante un estanque virtual con mascotas.
 
-El frontend está desarrollado con **React, TypeScript y Vite**, y se ejecuta en Android mediante **Capacitor 7**. Este repositorio incluye el proyecto nativo Android.
+Desarrollada con **React, TypeScript, Vite y Capacitor 7**, con integración a **Supabase** para autenticación, perfiles y publicaciones.
+
+## Versiones
+
+- **main:** versión actual v14, en `VeciRed_v14_Movil_Android/`.
+- **frontend/vecired-v10:** [respaldo de la v10](https://github.com/Acund01/VeciRed-Demo/tree/frontend/vecired-v10).
+- **frontend/vecired-v14:** rama de desarrollo de la v14.
 
 ## Funcionalidades
 
-- Presentación y guía de bienvenida.
-- Estanque animado con filtros de servicios, favores y emergencias.
-- Una mascota por vecino, agrupando sus publicaciones.
-- Publicaciones con categorías y recursos de emergencia.
-- Perfil con selección de mascota, hábitat y hobby.
-- Modo noche y lluvia en modo emergencia.
-- Geolocalización mediante un plugin nativo.
-- Pantallas de chat y paneles de llamadas y videollamadas.
-- Demostración con datos locales y adaptadores iniciales para Supabase.
+- Estanque con una mascota por vecino y filtros de servicios, favores y emergencias.
+- Publicación de ofertas o solicitudes de apoyo.
+- Perfil con mascota, hábitat y afición.
+- Modo noche y panel de emergencias con enlaces telefónicos.
+- Contacto externo por WhatsApp cuando el vecino proporciona su número.
+- Compartir ubicación aproximada bajo petición.
+- Registro, inicio de sesión, restauración de sesión y persistencia de perfiles y publicaciones mediante Supabase, una vez configurado.
+- Demostración local cuando no hay credenciales Supabase.
 
-## Estado del proyecto
-
-Es un **frontend de demostración**. El chat entre dispositivos, las llamadas, las videollamadas, la presencia y la reputación verificable requieren integración adicional de backend. Los paneles de llamadas no realizan llamadas reales.
-
-El cliente y los adaptadores de Supabase están incluidos, pero las operaciones principales de la demostración utilizan datos locales. Configurar las variables de entorno no sustituye la integración pendiente de los adaptadores en las pantallas.
+La v14 utiliza WhatsApp para contactar: no incluye chat, llamadas ni videollamadas internas. Las publicaciones se cargan al iniciar sesión; la actualización automática entre dispositivos está pendiente. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
 
 ## Requisitos
 
 - Node.js 22 o superior y npm.
-- Java JDK 21 para compilar Android.
-- Android Studio con Android SDK y Platform Tools.
-- Emulador Android o teléfono con depuración USB.
+- Android Studio, Android SDK y Platform Tools.
+- JDK 21 para compilar Android.
+- Emulador o teléfono con depuración USB; para probar WhatsApp se recomienda un teléfono con esa aplicación.
 
-## Instalación
+## Instalación y vista previa
 
 ```bash
 git clone https://github.com/Acund01/VeciRed-Demo.git
-cd VeciRed-Demo/VeciRed_v10_Movil_Android
-npm ci
-```
-
-Todos los comandos npm siguientes se ejecutan dentro de `VeciRed_v10_Movil_Android`.
-
-En PowerShell, si la política de ejecución bloquea `npm.ps1` o `npx.ps1`, utiliza `npm.cmd` y `npx.cmd`.
-
-## Vista previa en navegador
-
-```bash
+cd VeciRed-Demo/VeciRed_v14_Movil_Android
+npm install
 npm run dev
 ```
 
-Abre la dirección que muestra Vite en la terminal. La vista del navegador sirve para desarrollo; algunas funciones nativas requieren Android.
+Abre la dirección que muestra Vite. Todos los comandos siguientes se ejecutan dentro de `VeciRed_v14_Movil_Android`.
+
+En PowerShell, si se bloquea `npm.ps1` o `npx.ps1`, utiliza `npm.cmd` y `npx.cmd`.
+
+## Configurar Supabase
+
+Consulta la [guía de Supabase para el equipo](VeciRed_v14_Movil_Android/GUIA_SUPABASE_PARA_EL_EQUIPO.md).
+
+1. Crea un proyecto Supabase de pruebas.
+2. Revisa `src/infrastructure/supabase-schema.sql` y aplícalo a una base **nueva**. Si ya existen tablas, prepara una migración en lugar de repetir el script.
+3. Habilita acceso por correo y contraseña y configura la confirmación de correo.
+4. Copia `.env.example` a `.env` y completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` con la URL y la clave pública.
+5. Reinicia Vite o recompila y sincroniza Android después de cambiar esas variables.
+
+El teléfono se almacena en `private_contacts` y se consulta mediante una función al contactar. Las políticas actuales permiten lecturas amplias a usuarios autenticados: falta restringirlas por comunidad verificada. Nunca incluyas claves secretas o `service_role` en el frontend.
 
 ## Ejecutar en Android
+
+La v14 no incluye el proyecto nativo generado. La primera vez:
+
+```bash
+npm run build
+npx cap add android
+npm run android:open
+```
+
+En Android Studio, espera la sincronización de Gradle, selecciona JDK 21, elige un dispositivo y pulsa **Run**.
+
+Después de modificar React:
 
 ```bash
 npm run android:sync
 npm run android:open
 ```
 
-En Android Studio, espera a que termine la sincronización de Gradle, selecciona un dispositivo y pulsa **Run**. En la configuración de Gradle, selecciona JDK 21.
+Ejecuta `cap add android` únicamente cuando no exista `android/`.
 
-El proyecto nativo se encuentra en `VeciRed_v10_Movil_Android/android`. Ya está incluido: no es necesario ejecutar `cap add android`.
+## Generar APK de depuración en Windows
 
-También puedes ejecutar desde la terminal con un dispositivo disponible:
-
-```bash
-npm run android:run
-```
-
-Después de modificar React, ejecuta `npm run android:sync` para actualizar los recursos de la app Android.
-
-## Generar un APK de depuración
+Después de generar el proyecto nativo:
 
 ```bash
 npm run android:apk
 ```
 
-Este script usa `gradlew.bat` y está preparado para Windows. El APK se genera en:
+Resultado esperado:
 
 ```text
-VeciRed_v10_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk
+VeciRed_v14_Movil_Android/android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Si Gradle rechaza una ruta de Windows con caracteres como `°` o tildes, utiliza una carpeta sin esos caracteres. En este entorno también se logró compilar pasando la opción de Gradle `-Pandroid.overridePathCheck=true`.
-
-## Configuración de Supabase
-
-1. Copia `.env.example` a `.env` dentro de `VeciRed_v10_Movil_Android`.
-2. Completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` con la URL y la clave pública de tu proyecto.
-3. Revisa el esquema y las políticas en `src/infrastructure/supabase-schema.sql` antes de aplicarlos a una base de pruebas.
-4. Integra los adaptadores de `supabaseGateway.ts` con las operaciones de la aplicación.
-
-Las políticas requieren revisión y refuerzo por comunidad antes de un uso en producción. Nunca incluyas una clave `service_role` en el frontend. Los archivos `.env` están excluidos de Git.
+Si Gradle rechaza una ruta de Windows con caracteres como `°`, utiliza una ruta sin esos caracteres.
 
 ## Estructura
 
 ```text
-VeciRed_v10_Movil_Android/
-├── android/                  # Proyecto nativo de Capacitor
-├── public/                   # Recursos estáticos
+VeciRed_v14_Movil_Android/
+├── public/
 ├── src/
-│   ├── App.tsx               # Pantallas y coordinación de UI
-│   ├── components/           # Componentes visuales
-│   ├── data/                 # Datos de demostración
-│   ├── domain/               # Agrupación de vecinos y filtros
-│   ├── infrastructure/       # Contratos, cliente y adaptadores Supabase
-│   ├── models/               # Tipos del dominio
-│   ├── services/             # Ubicación y persistencia local
-│   └── styles.css            # Estilos de la aplicación
+│   ├── App.tsx               # Pantallas y estado
+│   ├── components/           # Mascotas
+│   ├── data/                 # Demostración y contactos de emergencia
+│   ├── domain/               # Agrupación y filtros
+│   ├── infrastructure/       # Supabase, contratos y SQL
+│   ├── models/               # Tipos
+│   ├── services/             # Ubicación, WhatsApp y persistencia local
+│   └── styles.css
 ├── capacitor.config.ts
+├── GUIA_SUPABASE_PARA_EL_EQUIPO.md
 └── package.json
 ```
 
-## Comprobaciones
+## Verificación
 
 ```bash
 npm run typecheck
 npm run build
 ```
 
-Se verificó la compilación del frontend y del APK de depuración con JDK 21, y la apertura de la pantalla inicial en un emulador Android API 37. Esta comprobación no cubre los flujos de backend ni todas las interacciones de la app.
-
-Para más detalles de arquitectura e integración, consulta el [README de la aplicación](VeciRed_v10_Movil_Android/README.md).
+La v14 pasó la comprobación de TypeScript y la compilación Vite después de corregir los tipos de contactos de emergencia. Quedan pendientes la compilación del APK v14 y las pruebas de integración con un proyecto Supabase configurado y dos dispositivos.
