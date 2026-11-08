@@ -1,0 +1,9 @@
+import {hasSupabase,supabase} from './supabase';
+export type Recommendation={id:string;authorId:string;type:'vecino'|'lugar';targetUserId:string|null;title:string;description:string;mapsUrl:string;createdAt:string};
+const key='runare-demo-recommendations';
+const demo=():Recommendation[]=>{try{return JSON.parse(localStorage.getItem(key)||'[]') as Recommendation[]}catch{return []}};
+function validMaps(u:string){if(!u)return '';try{const x=new URL(u);if(x.protocol!=='https:'||!['google.com','www.google.com','maps.google.com','maps.app.goo.gl'].includes(x.hostname))throw Error();return u}catch{throw new Error('Utiliza un enlace HTTPS válido de Google Maps')}}
+export const recommendationGateway={
+ async list():Promise<Recommendation[]>{if(!hasSupabase||!supabase)return demo();const {data,error}=await supabase.from('recommendations').select('*').order('created_at',{ascending:false});if(error)throw error;return (data||[]).map(r=>({id:r.id,authorId:r.author_id,type:r.type,targetUserId:r.target_user_id,title:r.title,description:r.description||'',mapsUrl:r.maps_url||'',createdAt:r.created_at}))},
+ async create(input:Omit<Recommendation,'id'|'createdAt'>):Promise<Recommendation>{const mapsUrl=validMaps(input.mapsUrl);if(!hasSupabase||!supabase){const row={...input,mapsUrl,id:crypto.randomUUID(),createdAt:new Date().toISOString()};localStorage.setItem(key,JSON.stringify([row,...demo()]));return row}const {data,error}=await supabase.from('recommendations').insert({author_id:input.authorId,type:input.type,target_user_id:input.targetUserId,title:input.title,description:input.description,maps_url:mapsUrl}).select().single();if(error)throw error;return {id:data.id,authorId:data.author_id,type:data.type,targetUserId:data.target_user_id,title:data.title,description:data.description||'',mapsUrl:data.maps_url||'',createdAt:data.created_at}}
+};
