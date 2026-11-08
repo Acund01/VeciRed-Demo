@@ -1,7 +1,9 @@
 # Preliminar v18: integración y validación
 
 Base: `origin/main` `9895ec4`, con PR #3 fusionado.
-Origen de novedades: `origin/frontend/runared-v17-mapa-ubicaciones` `3000085`.
+Origen de novedades: `origin/frontend/runared-v17-mapa-ubicaciones` `3000085`, actualizado con `61ccfc8` (permisos de ubicación aproximada y precisa en Android al compartir desde la app).
+
+Limpieza opcional de datos de demo: ejecutar manualmente [LIMPIAR_PUBLICACIONES_Y_RECOMENDACIONES_DEMO.sql](../VeciRed_v14_Movil_Android/supabase/LIMPIAR_PUBLICACIONES_Y_RECOMENDACIONES_DEMO.sql) en SQL Editor. Elimina todas las publicaciones y recomendaciones; conserva cuentas, perfiles, contactos, ubicaciones y alertas. No se ejecutó en Supabase desde esta entrega.
 Rama de trabajo: `frontend/vecired-v18`.
 
 ## Resultado
