@@ -21,7 +21,7 @@ Desarrollada con **React, TypeScript, Vite y Capacitor 7**, con integración a *
 - Registro, inicio de sesión, restauración de sesión y persistencia de perfiles y publicaciones mediante Supabase, una vez configurado.
 - Demostración local cuando no hay credenciales Supabase.
 
-La v14 utiliza WhatsApp para contactar: no incluye chat, llamadas ni videollamadas internas. Las publicaciones se cargan al iniciar sesión; la actualización automática entre dispositivos está pendiente. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
+La v14 utiliza WhatsApp para contactar: no incluye chat, llamadas ni videollamadas internas. El estanque consulta perfiles y publicaciones cada 15 segundos mientras está visible y al volver a la app o recuperar conexión. Esta actualización periódica no requiere habilitar Realtime; si falla, conserva los datos visibles y permite reintentar. La asignación real de comunidad y las políticas por comunidad también requieren trabajo antes de usar datos de vecinos reales.
 
 ## Requisitos
 
